@@ -1,0 +1,65 @@
+<?php
+	      
+             $db = getDB();
+		try		//Connection a la bdd
+		{
+		}
+		catch (Exception $e)
+		{
+			die('Erreur : ' . $e->getMessage());
+		}
+		$reponse = $db->query('SELECT * FROM invoice  
+		
+		LEFT JOIN comments ON  (invoice.id_invoice=comments.comments_id) 		
+		LEFT JOIN statut ON  (invoice.id_invoice=statut.statut_id)   
+
+WHERE  type=1  AND (statut_type=1 OR statut_type=2)      group by id_invoice DESC  ');
+
+echo '<center>
+		<div class="table-responsive">
+		<table class=" table table-striped table-bordered ">
+		';
+		echo '<tr>';
+		echo '<th align="center" >Invoice</th>';
+		echo '<th align="center">Statut</th>';
+		echo '<th align="center">Client</th>';		
+		echo '<th align="center">Titre</th>';	
+		echo '<th align="center">Date</th>';	
+		echo '</tr>';
+		
+            while($donnees = $reponse->fetch())	// Renvoit les valeurs de la bdd
+                        {       	
+            	
+            	
+            	
+            	if($donnees['statut_type']==1) {
+            		$statut = '<div align="center"> <button type="button" class="btn btn-block btn-warning btn-xs flat">ouverte</button></div>';
+
+            	}
+            	
+            	if($donnees['statut_type']==2) {
+            		$statut = '<div align="center"> <button type="button" class="btn btn-block btn-primary btn-xs flat">envoyé</button></div>';
+            	} 
+
+            	if($donnees['statut_type']==3) {
+            		$statut = '<div align="center"> <button type="button" class="btn btn-block btn-success btn-xs flat">payé</button></div>';
+            	} 
+            	
+            	if($donnees['statut_type']==4) {
+            		$statut = '<div align="center"> <button type="button" class="btn btn-block btn-danger btn-xs flat">annulé</button></div>';
+
+            	}       	
+
+            	
+            	echo '<tr>';
+            	echo '<td align="center" width="2%" ><a href="'.URLSITE.'form/facture.php?id_invoice='. $donnees['id_invoice'] .' "><button type="button" class="btn btn-block btn-info btn-xs    
+            	      flat">' . $donnees['id_invoice'] . '</td></button></a>';
+            	echo '<td  width="5%" >' . $statut . '</td>';
+            	echo '<td align="left" >'.$donnees['showin'].' </td>';
+            	echo '<td align="left" >' . $donnees['titre'] . '</td>';
+            	echo '<td align="center"  width="5%">' . $donnees['date_ouverture'] . '</td>';       	
+            	echo '</tr>';
+            }
+            echo '</table></div></center>';
+            $pdo = null;
+            ?>
