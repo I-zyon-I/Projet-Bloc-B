@@ -27,7 +27,9 @@ class SeanceRepository {
                 INNER JOIN espace as ep
                     ON so.idEspace = ep.idEspace
             WHERE idSejour = $idSejour
-            ORDER BY sc.dateSeance ASC, sc.heureSeance ASC;");
+            ORDER BY
+                sc.dateSeance ASC,
+                sc.heureSeance ASC;");
         } catch (PDOException $e) {
             echo "Erreur Query sur : " . $e->getMessage();
         }

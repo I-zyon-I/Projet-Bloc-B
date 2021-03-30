@@ -18,9 +18,26 @@ class SejourRepository {
         }
     }
 
-    public function listeSejours($paging) {
+    public function findBy($idSejour) {
+        try {
+            return $this->pdo->query("SELECT *
+            FROM sejour as sj
+                INNER JOIN client as cl
+                    ON sj.idClient = cl.idClient
+            WHERE idSejour = $idSejour;");
+        } catch (PDOException $e) {
+            echo "Erreur Query sur : " . $e->getMessage();
+        }
+    }
+
+    public function listeSejours($paging, ?array $arrStatut) {
         try {
             $offset = ($paging - 1) * 10;
+            if (!$arrStatut) {
+                $strStatut = "('VAL')";
+            } else {
+                $strStatut = "('" . implode("', '", $arrStatut) . "')";
+            }
             return $this->pdo->query("SELECT
             sj.idSejour AS idSejour,
             sj.dateDebutSejour AS dateDebutSejour,
@@ -31,32 +48,34 @@ class SejourRepository {
             cl.prenomClient AS prenomClient,
             cl.naissanceClient AS naissanceClient,
             cl.mailClient AS mailClient
-            -- sc.dateSeance AS dateSeance,
-            -- sc.heureSeance AS heureSeance,
-            -- so.nomSoin AS nomSoin,
-            -- so.dureeMinuteSoin AS dureeMinuteSoin,
-            -- ep.nomEspace AS nomEspace
         FROM sejour AS sj
             INNER JOIN client AS cl
                 ON sj.idClient = cl.idClient
-            -- LEFT JOIN seance AS sc
-            --     ON sj.idSejour = sc.idSejour
-            -- LEFT JOIN soin AS so
-            --     ON sc.idSoin = so.idSoin
-            -- LEFT JOIN espace as ep
-            --     ON so.idEspace = ep.idEspace
+        WHERE statutSejour IN $strStatut
         ORDER BY
             sj.dateDebutSejour ASC,
             sj.idSejour ASC
-            -- sc.dateSeance ASC,
-            -- sc.heureSeance ASC
         LIMIT $offset, 10;");
         } catch (PDOException $e) {
             echo "Erreur Query sur : " . $e->getMessage();
         }
     }
 
-    public function afficheSejour($id) {
+    function count($arrStatut = ['VAL', 'CLO', 'DEL']) {
+        try {
+            if ($arrStatut == []) {
+                $strStatut = "('VAL', 'CLO', 'DEL')";
+            } else {
+                $strStatut = "('" . implode("', '", $arrStatut) . "')";
+            }
+            return $this->pdo->query("SELECT COUNT (*) AS total FROM sejour WHERE statutSejour IN $strStatut;");
+        } catch (PDOException $e) {
+            echo "Erreur Query sur : " . $e->getMessage();
+        }
+    }
+
+    // TO DELETE...?
+    public function afficheSejour($idSejour) {
         try {
             return $this->pdo->query("SELECT
                     sj.idSejour AS idSejour,
@@ -69,13 +88,6 @@ class SejourRepository {
                     cl.prenomClient AS prenomClient,
                     cl.naissanceClient AS naissanceClient,
                     cl.mailClient AS mailClient,
-                    sc.dateSeance AS dateSeance,
-                    sc.heureSeance AS heureSeance,
-                    sc.statutSeance AS statutSeance,
-                    so.idSoin AS idSoin,
-                    so.nomSoin AS nomSoin,
-                    so.dureeMinuteSoin AS dureeMinuteSoin,
-                    ep.nomEspace AS nomEspace
                 FROM sejour AS sj
                     LEFT JOIN client AS cl
                         ON sj.idClient = cl.idClient
@@ -85,7 +97,7 @@ class SejourRepository {
                         ON sc.idSoin = so.idSoin
                     LEFT JOIN espace as ep
                         ON so.idEspace = ep.idEspace
-                WHERE sj.idSejour = $id
+                WHERE sj.idSejour = $idSejour
                 ORDER BY
                     sc.dateSeance ASC,
                     sc.heureSeance ASC;"
@@ -106,4 +118,17 @@ class SejourRepository {
         }
     }
     
+    public function modifSejour($id) {
+        try {
+            return $this->pdo->query("SELECT *
+                FROM sejour
+                WHERE idSejour = $id;"
+            );
+        } catch (PDOException $e) {
+            echo "Erreur Query sur : " . $e->getMessage();
+        }
+    }
+    
+
+
 }
