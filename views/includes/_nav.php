@@ -8,7 +8,8 @@
         <ul class="navbar-nav mr-auto">
             <?= $hbt->bt4Li("?page=home", "Accueil") ?>
             <?= $hbt->bt4Li("?page=contact", "Contact") ?>
-            <?= $hbt->bt4Li("?page=sejour", "Séjour") ?>
+            <?= $hbt->bt4Li("?page=listeSejour", "Séjour") ?>
+            <?= $hbt->bt4Li("?page=editClient", "Nouveau client") ?>
         </ul>
     </div>
 </nav>
