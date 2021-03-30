@@ -1,7 +1,7 @@
 <?php 
 
 // inclusion des fichiers pricipaux
-
+require_once "controllers/_main_controller.php";
 require_once "_config/config.php";
 require_once "_helper/HelperBootstrap.php";
 require_once "_helper/HelperFileSystem.php";
@@ -18,15 +18,14 @@ $nameApp = "WEBSITE_NAME";
 
 // définition de la route courante 
 if (isset($_GET['page'])and !empty($_GET['page'])) {
-    $page = trim(strtolower($_GET['page']));
+    // $page = trim(strtolower($_GET['page']));
+    $page = trim($_GET['page']);
 }else{
     //page par défaut si aucune autre page est demandée
     $page = "home";
 }
-
 // array contenant toutes les pages disponibles 
 $allpages = scandir("controllers/");
-
 // test si la page demandée par le visiteur est disponible
 if(in_array($page . '_controller.php', $allpages)) {
     // Ajout des fichiers nécessaires au traitement de la demande du visiteur
@@ -37,6 +36,5 @@ if(in_array($page . '_controller.php', $allpages)) {
     // page demandée non disponible
     echo "Page demandée non disponible : erreur 404";
 }
-
 
 ?>
