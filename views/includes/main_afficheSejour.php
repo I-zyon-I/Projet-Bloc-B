@@ -18,7 +18,7 @@
                     Prénom : $sejour->prenomClient<br>
                     Date de naissance : $dateNaissance<br>
                     Email : $sejour->mailClient<br>
-                    <a class='btn btn-primary mt-2' href='?page=affichClient&id=$idClient'>Afficher</a>
+                    <a class='btn btn-primary mt-2' href='?page=afficheClient&id=$idClient'>Afficher</a>
                     <a class='btn btn-primary mt-2' href='?page=editClient&id=$idClient'>Modifier</a>
                 </div>
             </div>
